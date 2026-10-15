@@ -1,0 +1,108 @@
+{
+  "dataset": {
+    "region_name": "MISO",
+    "enforce_asof_publication": true,
+    "clip_negative_fuel_values": true,
+    "fuel_cols": [
+      "coal",
+      "nat_gas",
+      "nuclear",
+      "wind",
+      "solar",
+      "other"
+    ],
+    "fuel_col_map": {
+      "coal": "coal",
+      "natural_gas": "nat_gas",
+      "nuclear": "nuclear",
+      "wind": "wind",
+      "solar": "solar",
+      "other": "other",
+      "imports": "other",
+      "battery_storage": "other"
+    },
+    "load_locations": [],
+    "load_col": "miso_mtlf",
+    "required_forecast_lead_hours": 0,
+    "max_load_interpolation_hours": 6
+  },
+  "paths": {
+    "fuel_mix_csv": [
+      "data/MISO/_raw/MISO_fuel_mix_raw.csv",
+      "data/MISO/_raw_2025/MISO_fuel_mix_raw.csv"
+    ],
+    "load_forecast_csv": [
+      "data/MISO/_raw/MISO_load_forecast_asof0_raw.csv",
+      "data/MISO/_raw_2025/MISO_load_forecast_asof0_raw.csv"
+    ]
+  },
+  "features": {
+    "system_load": true,
+    "time": true,
+    "load_lags": true,
+    "load_lag_hours": [
+      24
+    ],
+    "historical_fuel_lags": true,
+    "historical_lag_hours": [
+      24
+    ],
+    "zonal_load": false,
+    "zonal_percentage": false,
+    "renewable_forecast": false,
+    "weather": false
+  },
+  "emission_factors": {
+    "coal": 0.95,
+    "nat_gas": 0.4,
+    "nuclear": 0.0,
+    "wind": 0.0,
+    "solar": 0.0,
+    "other": 0.2
+  },
+  "fossil_fuels": [
+    "coal",
+    "nat_gas"
+  ],
+  "loss_weights": {
+    "fuel": 1.0,
+    "ci": 50.0,
+    "balance": 0.2,
+    "fossil": 0.5
+  },
+  "data_source": {
+    "provider": "gridstatusio",
+    "start_date": "2024-01-02",
+    "end_date": "2026-01-01",
+    "chunk_days": 30,
+    "sleep_sec": 2,
+    "fuel_mix": {
+      "dataset": "miso_fuel_mix",
+      "resample": "1h"
+    },
+    "load_forecast": {
+      "dataset": "miso_load_forecast",
+      "resample": "1h"
+    }
+  },
+  "split": {
+    "train_frac": 0.7,
+    "val_frac": 0.15,
+    "test_frac": 0.15
+  },
+  "model": {
+    "hidden_size": 128
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "max_epochs": 40,
+    "patience": 5
+  },
+  "output": {
+    "save_dir": "results/fuelmix_dayahead/miso"
+  },
+  "debug": {
+    "max_samples": null
+  }
+}

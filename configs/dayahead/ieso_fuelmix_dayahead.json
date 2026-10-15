@@ -1,0 +1,90 @@
+{
+  "dataset": {
+    "region_name": "IESO",
+    "enforce_asof_publication": true,
+    "clip_negative_fuel_values": true,
+    "fuel_cols": [
+      "nat_gas",
+      "hydro",
+      "nuclear",
+      "solar",
+      "wind",
+      "biofuel"
+    ],
+    "fuel_col_map": {
+      "gas": "nat_gas",
+      "hydro": "hydro",
+      "nuclear": "nuclear",
+      "solar": "solar",
+      "wind": "wind",
+      "biofuel": "biofuel"
+    },
+    "load_locations": [],
+    "load_col": "ontario_load_forecast",
+    "required_forecast_lead_hours": 0,
+    "max_load_interpolation_hours": 6
+  },
+  "paths": {
+    "fuel_mix_csv": [
+      "data/IESO/_raw/IESO_fuel_mix_raw.csv",
+      "data/IESO/_raw_2025/IESO_fuel_mix_raw.csv"
+    ],
+    "load_forecast_csv": [
+      "data/IESO/_raw/IESO_load_forecast_asof0_raw.csv",
+      "data/IESO/_raw_2025/IESO_load_forecast_asof0_raw.csv"
+    ]
+  },
+  "features": {
+    "system_load": true,
+    "time": true,
+    "load_lags": true,
+    "load_lag_hours": [
+      24
+    ],
+    "historical_fuel_lags": true,
+    "historical_lag_hours": [
+      24
+    ],
+    "zonal_load": false,
+    "zonal_percentage": false,
+    "renewable_forecast": false,
+    "weather": false
+  },
+  "emission_factors": {
+    "nat_gas": 0.4,
+    "hydro": 0.0,
+    "nuclear": 0.0,
+    "solar": 0.0,
+    "wind": 0.0,
+    "biofuel": 0.0
+  },
+  "fossil_fuels": [
+    "nat_gas"
+  ],
+  "loss_weights": {
+    "fuel": 1.0,
+    "ci": 50.0,
+    "balance": 0.2,
+    "fossil": 0.5
+  },
+  "split": {
+    "train_frac": 0.7,
+    "val_frac": 0.15,
+    "test_frac": 0.15
+  },
+  "model": {
+    "hidden_size": 128
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "max_epochs": 40,
+    "patience": 5
+  },
+  "output": {
+    "save_dir": "results/fuelmix_dayahead/ieso"
+  },
+  "debug": {
+    "max_samples": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "setting": "day-ahead-like fixed 70/15/15 split",
+  "seeds": [
+    7,
+    42,
+    123
+  ],
+  "contribution": "eta_f * fuel_MW / latest load forecast",
+  "baseline": "24h fuel persistence",
+  "spike_hours": "top decile of realized proxy in the test split",
+  "ercot_window_hours": 72,
+  "window_selection": "largest realized-proxy range among contiguous 72-hour ERCOT test windows; illustrative only"
+}

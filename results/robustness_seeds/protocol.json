@@ -1,0 +1,49 @@
+{
+  "seeds": [
+    7,
+    42,
+    123,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808
+  ],
+  "windows": [
+    "2025-02-01 00:00:00+00:00",
+    "2025-04-01 00:00:00+00:00",
+    "2025-06-01 00:00:00+00:00",
+    "2025-08-01 00:00:00+00:00",
+    "2025-10-01 00:00:00+00:00"
+  ],
+  "test_days": 56,
+  "selection_days": 30,
+  "lambda_spo": 10.0,
+  "lambda_source": "prior three-seed validation sweep; held fixed",
+  "max_epochs": 40,
+  "patience": 5,
+  "min_epochs": 0,
+  "cap": 0.16666666666666666,
+  "threads": 1,
+  "ensemble_sizes": [
+    3,
+    10
+  ],
+  "ensemble3_seeds": [
+    7,
+    42,
+    123
+  ],
+  "bootstrap_draws": 5000,
+  "bootstrap_blocks_days": [
+    3,
+    7,
+    14
+  ],
+  "bootstrap_seed": 20261014,
+  "numpy": "1.26.4",
+  "pandas": "3.0.2",
+  "torch": "2.8.0"
+}

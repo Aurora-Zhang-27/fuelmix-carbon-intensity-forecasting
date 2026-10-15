@@ -1,0 +1,104 @@
+{
+  "dataset": {
+    "region_name": "NYISO",
+    "fuel_cols": [
+      "nat_gas",
+      "nuclear",
+      "hydro",
+      "wind",
+      "oil",
+      "other"
+    ],
+    "fuel_col_map": {
+      "dual_fuel": "nat_gas",
+      "natural_gas": "nat_gas",
+      "nuclear": "nuclear",
+      "hydro": "hydro",
+      "wind": "wind",
+      "other_fossil_fuels": "oil",
+      "other_renewables": "other"
+    },
+    "load_locations": [],
+    "load_col": "load_forecast",
+    "enforce_asof_publication": true,
+    "required_forecast_lead_hours": 0,
+    "max_load_interpolation_hours": 6
+  },
+  "paths": {
+    "fuel_mix_csv": [
+      "data/NYISO/_raw/NYISO_fuel_mix_raw.csv",
+      "data/NYISO/_raw_2025/NYISO_fuel_mix_raw.csv"
+    ],
+    "load_forecast_csv": [
+      "data/NYISO/_raw/NYISO_load_forecast_asof0_raw.csv",
+      "data/NYISO/_raw_2025/NYISO_load_forecast_asof0_raw.csv"
+    ]
+  },
+  "features": {
+    "system_load": true,
+    "time": true,
+    "load_lags": true,
+    "historical_fuel_lags": true,
+    "historical_lag_hours": [
+      1,
+      24
+    ],
+    "zonal_load": false,
+    "zonal_percentage": false,
+    "renewable_forecast": false,
+    "weather": false
+  },
+  "emission_factors": {
+    "nat_gas": 0.4,
+    "nuclear": 0.0,
+    "hydro": 0.0,
+    "wind": 0.0,
+    "oil": 0.78,
+    "other": 0.2
+  },
+  "fossil_fuels": [
+    "nat_gas",
+    "oil"
+  ],
+  "loss_weights": {
+    "fuel": 1.0,
+    "ci": 50.0,
+    "balance": 0.2,
+    "fossil": 0.5
+  },
+  "data_source": {
+    "provider": "gridstatusio",
+    "start_date": "2024-01-02",
+    "end_date": "2026-01-01",
+    "chunk_days": 30,
+    "sleep_sec": 2,
+    "fuel_mix": {
+      "dataset": "nyiso_fuel_mix",
+      "resample": "1h"
+    },
+    "load_forecast": {
+      "dataset": "nyiso_load_forecast",
+      "resample": "1h"
+    }
+  },
+  "split": {
+    "train_frac": 0.7,
+    "val_frac": 0.15,
+    "test_frac": 0.15
+  },
+  "model": {
+    "hidden_size": 128
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "max_epochs": 40,
+    "patience": 5
+  },
+  "output": {
+    "save_dir": "results/fuelmix/nyiso"
+  },
+  "debug": {
+    "max_samples": null
+  }
+}

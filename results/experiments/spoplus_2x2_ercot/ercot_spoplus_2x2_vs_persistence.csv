@@ -1,0 +1,5 @@
+method,baseline,n_days,mean_delta_emission,median_delta_emission,wilcoxon_p_two_sided
+Direct MSE,24h persistence,280,-0.005075696806968101,0.0,2.025243188675285e-07
+Direct SPO+,24h persistence,280,-0.005313397842170634,0.0,6.304054054295024e-08
+Fuel-mix MSE,24h persistence,280,-0.005053106971747907,0.0,3.140819733861046e-05
+Fuel-mix SPO+,24h persistence,280,-0.005049890797421616,0.0,0.00011949728419376044

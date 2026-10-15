@@ -1,0 +1,117 @@
+{
+  "dataset": {
+    "region_name": "ERCOT_RNW0",
+    "clip_negative_fuel_values": true,
+    "accounting_notes": {
+      "power_storage": "Mapped to other. Net storage is reported from the 2025-12-05 RTC+B go-live; charging (negative) is clipped, matching the discharge-only 2024 series."
+    },
+    "fuel_cols": [
+      "coal",
+      "nat_gas",
+      "nuclear",
+      "hydro",
+      "wind",
+      "solar",
+      "other"
+    ],
+    "fuel_col_map": {
+      "coal_and_lignite": "coal",
+      "natural_gas": "nat_gas",
+      "nuclear": "nuclear",
+      "hydro": "hydro",
+      "wind": "wind",
+      "solar": "solar",
+      "other": "other",
+      "power_storage": "other"
+    },
+    "load_locations": [],
+    "load_col": "system_total",
+    "enforce_asof_publication": true,
+    "required_forecast_lead_hours": 0,
+    "max_load_interpolation_hours": 6
+  },
+  "paths": {
+    "fuel_mix_csv": [
+      "data/ERCO/_raw/ERCOT_fuel_mix_raw.csv",
+      "data/ERCO/_raw_2025/ERCOT_fuel_mix_raw.csv"
+    ],
+    "load_forecast_csv": [
+      "data/ERCO/_raw/ERCOT_load_forecast_asof0_raw.csv",
+      "data/ERCO/_raw_2025/ERCOT_load_forecast_asof0_raw.csv"
+    ],
+    "renewable_forecast_csv": [
+      "data/ERCO/_raw/ERCOT_renewable_forecast_asof0.csv",
+      "data/ERCO/_raw_2025/ERCOT_renewable_forecast_asof0.csv"
+    ]
+  },
+  "features": {
+    "system_load": true,
+    "time": true,
+    "load_lags": true,
+    "load_lag_hours": [
+      24
+    ],
+    "historical_fuel_lags": true,
+    "historical_lag_hours": [
+      24
+    ],
+    "zonal_load": false,
+    "zonal_percentage": false,
+    "renewable_forecast": true,
+    "weather": false
+  },
+  "emission_factors": {
+    "coal": 0.95,
+    "nat_gas": 0.4,
+    "nuclear": 0.0,
+    "hydro": 0.0,
+    "wind": 0.0,
+    "solar": 0.0,
+    "other": 0.2
+  },
+  "fossil_fuels": [
+    "coal",
+    "nat_gas"
+  ],
+  "loss_weights": {
+    "fuel": 1.0,
+    "ci": 50.0,
+    "balance": 0.2,
+    "fossil": 0.5
+  },
+  "data_source": {
+    "provider": "gridstatusio",
+    "start_date": "2024-01-02",
+    "end_date": "2026-01-01",
+    "chunk_days": 30,
+    "sleep_sec": 2,
+    "fuel_mix": {
+      "dataset": "ercot_fuel_mix",
+      "resample": "1h"
+    },
+    "load_forecast": {
+      "dataset": "ercot_load_forecast",
+      "resample": "1h"
+    }
+  },
+  "split": {
+    "train_frac": 0.7,
+    "val_frac": 0.15,
+    "test_frac": 0.15
+  },
+  "model": {
+    "hidden_size": 128
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "max_epochs": 40,
+    "patience": 5
+  },
+  "output": {
+    "save_dir": "results/fuelmix_dayahead/ercot_rnw0"
+  },
+  "debug": {
+    "max_samples": null
+  }
+}

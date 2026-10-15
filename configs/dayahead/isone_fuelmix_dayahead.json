@@ -1,0 +1,119 @@
+{
+  "dataset": {
+    "region_name": "ISONE",
+    "fuel_cols": [
+      "coal",
+      "hydro",
+      "landfill_gas",
+      "natural_gas",
+      "nuclear",
+      "oil",
+      "other",
+      "refuse",
+      "solar",
+      "wind",
+      "wood"
+    ],
+    "load_locations": [
+      ".Z.CONNECTICUT",
+      ".Z.MAINE",
+      ".Z.NEMASSBOST",
+      ".Z.NEWHAMPSHIRE",
+      ".Z.RHODEISLAND",
+      ".Z.SEMASS",
+      ".Z.VERMONT",
+      ".Z.WCMASS"
+    ],
+    "load_col": "load_forecast",
+    "enforce_asof_publication": true,
+    "required_forecast_lead_hours": 0,
+    "max_load_interpolation_hours": 6
+  },
+  "paths": {
+    "fuel_mix_csv": [
+      "data/ISONE/_raw/ISONE_fuel_mix_hourly_raw.csv",
+      "data/ISONE/_raw_2025/ISONE_fuel_mix_hourly_raw.csv"
+    ],
+    "load_forecast_csv": [
+      "data/ISONE/_raw/ISONE_load_forecast_asof0_raw.csv",
+      "data/ISONE/_raw_2025/ISONE_load_forecast_asof0_raw.csv"
+    ]
+  },
+  "features": {
+    "system_load": true,
+    "time": true,
+    "load_lags": true,
+    "load_lag_hours": [
+      24
+    ],
+    "historical_fuel_lags": true,
+    "historical_lag_hours": [
+      24
+    ],
+    "zonal_load": true,
+    "zonal_percentage": true,
+    "renewable_forecast": false,
+    "weather": false
+  },
+  "emission_factors": {
+    "coal": 0.95,
+    "hydro": 0.0,
+    "landfill_gas": 0.45,
+    "natural_gas": 0.4,
+    "nuclear": 0.0,
+    "oil": 0.78,
+    "other": 0.2,
+    "refuse": 0.7,
+    "solar": 0.0,
+    "wind": 0.0,
+    "wood": 0.0
+  },
+  "fossil_fuels": [
+    "coal",
+    "natural_gas",
+    "oil",
+    "landfill_gas",
+    "refuse"
+  ],
+  "loss_weights": {
+    "fuel": 1.0,
+    "ci": 50.0,
+    "balance": 0.2,
+    "fossil": 0.5
+  },
+  "data_source": {
+    "provider": "gridstatusio",
+    "start_date": "2024-01-02",
+    "end_date": "2026-01-01",
+    "chunk_days": 30,
+    "sleep_sec": 2,
+    "fuel_mix": {
+      "dataset": "isone_fuel_mix",
+      "resample": "1h"
+    },
+    "load_forecast": {
+      "dataset": "isone_load_forecast",
+      "resample": "1h"
+    }
+  },
+  "split": {
+    "train_frac": 0.7,
+    "val_frac": 0.15,
+    "test_frac": 0.15
+  },
+  "model": {
+    "hidden_size": 128
+  },
+  "training": {
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "max_epochs": 40,
+    "patience": 5
+  },
+  "output": {
+    "save_dir": "results/fuelmix_dayahead/isone"
+  },
+  "debug": {
+    "max_samples": null
+  }
+}

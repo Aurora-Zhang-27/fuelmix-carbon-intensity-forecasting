@@ -1,0 +1,21 @@
+{
+  "seed": 42,
+  "epochs": 400,
+  "outer_split": [
+    0.7,
+    0.15,
+    0.15
+  ],
+  "validation_selection_fraction": 0.5,
+  "oof_warmup_fraction": 0.4,
+  "oof_folds": 3,
+  "fold_selection_fraction": 0.2,
+  "alpha": 0.2,
+  "point_epochs": 60,
+  "point_patience": 8,
+  "quantile_patience": 25,
+  "comparison": "matched post-warmup rows",
+  "numpy": "1.26.4",
+  "pandas": "3.0.2",
+  "torch": "2.8.0"
+}

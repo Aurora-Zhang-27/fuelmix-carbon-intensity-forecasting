@@ -1,0 +1,78 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.DS_Store
+~$*
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environments
+.venv/
+venv/
+env/
+
+# Local IDE/editor files
+.idea/
+.vscode/
+
+# Local runtime artifacts
+logs/
+build_latex_check/
+.matplotlib_cache/
+*.log
+*.aux
+*.out
+*.toc
+*.synctex.gz
+
+# API request cache (raw copies are kept under data/<REGION>/)
+data/_request_cache/
+
+# Local archives
+*.zip
+
+# Regenerable outputs; retain only compact canonical summaries
+results/*
+!results/summary/
+!results/summary/**
+!results/robustness_intervals/
+!results/robustness_intervals/**
+!results/robustness_seeds/
+!results/robustness_seeds/**
+!results/experiments/
+results/experiments/*
+!results/experiments/method_metrics/
+!results/experiments/method_metrics/**
+!results/experiments/spoplus_2x2_ercot/
+results/experiments/spoplus_2x2_ercot/**
+!results/experiments/spoplus_2x2_ercot/ercot_spoplus_2x2_summary.csv
+!results/experiments/spoplus_2x2_ercot/ercot_spoplus_2x2_vs_persistence.csv
+!results/experiments/spoplus_2x2_ercot/ercot_spoplus_lambda_curve.csv
+!results/experiments/spoplus_2x2_ercot/ercot_spoplus_lambda_curve_by_window.csv
+!results/rolling_rmse_aligned/
+!results/rolling_rmse_aligned/**
+!results/rolling_2024_windows/
+!results/rolling_2024_windows/**
+!results/rolling_ercot_ws/
+!results/rolling_ercot_ws/**
+!results/aligned_protocol/
+!results/aligned_protocol/**
+!results/attribution/
+!results/attribution/**
+paper_figures/
+
+# Local paper, poster, and expansion workspaces
+*.pdf
+*.pptx
+*.docx
+poster_talk_script.md
+IEEE-PES-Poster*/
+seven_region_expansion/
+seven_region_unified_2024/
+tmp/
+
+# Local secrets
+.env
+*.env
