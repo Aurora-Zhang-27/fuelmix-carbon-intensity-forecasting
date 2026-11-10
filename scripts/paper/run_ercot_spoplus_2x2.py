@@ -52,6 +52,9 @@ from run_decision_eval import cap_label, decision_weights, rank_corr, top_k_over
 
 DEFAULT_REGION = "ercot"
 REGION_LABELS = {
+    "isone": "ISO-NE",
+    "nyiso": "NYISO",
+    "pjm": "PJM",
     "ercot": "ERCOT",
     "caiso": "CAISO",
     "miso": "MISO",

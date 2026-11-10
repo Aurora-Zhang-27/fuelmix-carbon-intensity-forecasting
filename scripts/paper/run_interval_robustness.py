@@ -3,6 +3,8 @@
 Outer split 70/15/15; validation is split in chronological halves. Three
 expanding folds follow a 40% training warm-up; each fold reserves the last 20%
 of prior history for selection. All quantile variants use the same OOF rows.
+--setting short uses the one-hour-lag configs and 1-hour persistence;
+--setting dayahead uses the day-ahead-like configs and 24-hour persistence.
 """
 from __future__ import annotations
 import argparse, json, sys
@@ -38,7 +40,7 @@ def run_region(region,args):
     out.mkdir(parents=True,exist_ok=True)
     if args.resume and (out/'metrics.csv').exists():
         print(region,'resume completed',flush=True);return
-    cfg=load_config(ROOT/f'configs/{region}_fuelmix.json')
+    cfg=load_config(ROOT/(f'configs/dayahead/{region}_fuelmix_dayahead.json' if args.setting=='dayahead' else f'configs/{region}_fuelmix.json'))
     data=build_supervised_table(cfg)
     tr,sel,cal,te=frames_split(data,cfg)
     features=feature_columns_from_table(data,cfg)
@@ -95,8 +97,9 @@ def run_region(region,args):
         _,q=train_quantile_model(xtr,yt,xsel,ys,xpool,seed=args.seed,epochs=args.epochs)
         assert np.isfinite(q).all() and np.all(np.diff(q,axis=1)>=0)
         evaluate(method,q[:nc],q[nc:],len(yt),len(sel))
-    residual=true_ci(tr,cfg)-tr.historical_ci_1h_lag.to_numpy()
-    q=pool.historical_ci_1h_lag.to_numpy()[:,None]+np.quantile(residual,[.1,.5,.9])
+    lag='historical_ci_24h_lag' if args.setting=='dayahead' else 'historical_ci_1h_lag'
+    residual=true_ci(tr,cfg)-tr[lag].to_numpy()
+    q=pool[lag].to_numpy()[:,None]+np.quantile(residual,[.1,.5,.9])
     evaluate('Persistence',q[:nc],q[nc:],len(tr),0)
     pd.DataFrame(audit).to_csv(out/'audit.csv',index=False)
     pd.DataFrame(curves).to_csv(out/'curves.csv',index=False)
@@ -117,6 +120,7 @@ def main():
     ap.add_argument('--seed',type=int,default=42)
     ap.add_argument('--epochs',type=int,default=400)
     ap.add_argument('--resume',action='store_true')
+    ap.add_argument('--setting',choices=['short','dayahead'],default='short')
     args=ap.parse_args()
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True)
     args.out_dir.mkdir(parents=True,exist_ok=True)
@@ -124,6 +128,7 @@ def main():
         oof_warmup_fraction=.4,oof_folds=3,fold_selection_fraction=.2,alpha=.2,point_epochs=60,
         point_patience=8,quantile_patience=25,comparison='matched post-warmup rows',
         numpy=np.__version__,pandas=pd.__version__,torch=torch.__version__)
+    if args.setting=='dayahead':protocol['setting']='dayahead'
     path=args.out_dir/'protocol.json'
     if path.exists():assert json.loads(path.read_text())==protocol,'Protocol changed; use another output directory'
     else:path.write_text(json.dumps(protocol,indent=2))

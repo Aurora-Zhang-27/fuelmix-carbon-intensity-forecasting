@@ -88,7 +88,7 @@ def history(args):
         return r.loc[ORDER]
     r24=ratios('results/rolling_2024_windows/seven_regions_rolling_rmse_by_window_aligned.csv')
     r25=ratios('results/rolling_rmse_aligned/seven_regions_rolling_rmse_by_window_aligned.csv')
-    fig,ax=plt.subplots(figsize=(3.5,3.3),layout='constrained')
+    fig,ax=plt.subplots(figsize=(3.5,2.75),layout='constrained')
     y=np.arange(7)
     for j,(month,label,color) in enumerate([('06-01','June',ORANGE),('08-01','August',BLUE),('10-01','October',PURPLE)]):
         yy=y+(j-1)*.24
@@ -96,14 +96,18 @@ def history(args):
         ax.scatter(r24[month],yy,facecolors='white',edgecolors=color,s=20,lw=.9,zorder=3)
         ax.scatter(r25[month],yy,color=color,s=20,zorder=3,label=label)
     ax.axvline(1,color=INK,lw=.7,ls='--')
-    ax.set_yticks(y,ORDER);ax.invert_yaxis();ax.set_xscale('log')
+    ax.set_yticks(y,ORDER);ax.set_xscale('log');ax.set_ylim(6.55,-1.0)
+    # Reading aid: which side of the ratio-one line favors which method.
+    ax.text(.965,-.68,'\u2190 Fuel-mix more accurate',ha='right',va='center',fontsize=6.5,color=INK)
+    ax.text(1.035,-.68,'persistence more accurate \u2192',ha='left',va='center',fontsize=6.5,color=INK)
     ticks=[.75,1,1.5,2,3];ax.set_xticks(ticks,[f'{v:g}' for v in ticks]);ax.minorticks_off()
     ax.set_xlabel('Fuel-mix RMSE / 24h persistence RMSE')
     ax.grid(axis='x',color='#E3E5E7',lw=.45);ax.set_axisbelow(True)
     handles=[Line2D([],[],ls='',marker='o',color=c,label=l) for l,c in [('June',ORANGE),('August',BLUE),('October',PURPLE)]]
-    handles+=[Line2D([],[],ls='',marker='o',markerfacecolor='white',markeredgecolor=GRAY,color=GRAY,label='2024 (120-242 days)'),
-              Line2D([],[],ls='',marker='o',color=GRAY,label='2025 (485-607 days)')]
-    fig.legend(handles=handles,loc='outside upper center',ncol=3,frameon=False,fontsize=7,columnspacing=1,handletextpad=.3)
+    handles+=[Line2D([],[],ls='',marker='o',markerfacecolor='white',markeredgecolor=GRAY,color=GRAY,label='2024 window (120\u2013242 days of history)'),
+              Line2D([],[],ls='',marker='o',color=GRAY,label='2025 window (485\u2013607 days)')]
+    fig.legend(handles=handles[:3],loc='outside upper center',ncol=3,frameon=False,fontsize=7,columnspacing=1,handletextpad=.3)
+    ax.legend(handles=handles[3:],loc='lower right',frameon=True,framealpha=.95,edgecolor='#E3E5E7',fontsize=6.5,handletextpad=.3,borderpad=.4)
     save(fig,'history_contrast',args)
 
 
@@ -177,7 +181,7 @@ def seeds(args):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--output-dir',type=Path,default=ROOT.parent/'paper/paper_figures')
+    ap.add_argument('--output-dir',type=Path,default=ROOT/'paper_figures')
     ap.add_argument('--preview-dir',type=Path,required=True)
     ap.add_argument('--only',nargs='+',choices=['intervals','attribution','overview','seeds','history'])
     args=ap.parse_args();args.output_dir.mkdir(parents=True,exist_ok=True);args.preview_dir.mkdir(parents=True,exist_ok=True)

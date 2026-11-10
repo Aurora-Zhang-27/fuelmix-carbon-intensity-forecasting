@@ -14,7 +14,7 @@ W2025="2025-02-01,2025-04-01,2025-06-01,2025-08-01,2025-10-01"
 W2024="2024-06-01,2024-08-01,2024-10-01"
 export DAYAHEAD_EXTRA_REGIONS="ercot_rnw0,ercot_rnw24"
 PHASES=("$@")
-[[ ${#PHASES[@]} -eq 0 ]] && PHASES=(fixed rolling decision intervals contribution tables)
+[[ ${#PHASES[@]} -eq 0 ]] && PHASES=(fixed rolling decision intervals contribution sensitivity tables)
 
 for phase in "${PHASES[@]}"; do
   echo "=== phase: $phase ($(date '+%H:%M:%S'))"
@@ -35,12 +35,24 @@ for phase in "${PHASES[@]}"; do
       done ;;
     decision)
       "$PY" scripts/paper/run_ercot_spoplus_2x2.py --region ercot --seeds 7,42,123 --lambdas 10 --test-starts "$W2025"
+      for r in "${REGIONS[@]}"; do
+        "$PY" scripts/paper/run_ercot_spoplus_2x2.py --region "$r" --seeds 7,42,123 --lambdas 10 --test-starts "$W2025" \
+          --out-dir "results/experiments/spoplus_2x2_all/$r"
+      done
       "$PY" scripts/paper/run_ercot_seed_robustness.py --cache-dir "$CACHE/seeds" --test-starts "$W2025" ;;
     intervals)
-      "$PY" scripts/paper/run_interval_robustness.py --cache-dir "$CACHE/intervals" ;;
+      "$PY" scripts/paper/run_interval_robustness.py --cache-dir "$CACHE/intervals"
+      "$PY" scripts/paper/run_interval_robustness.py --setting dayahead \
+        --out-dir results/robustness_intervals_dayahead --cache-dir "$CACHE/intervals_dayahead" ;;
     contribution)
       "$PY" scripts/paper/run_fuel_contribution_eval.py --cache-dir "$CACHE/contribution"
-      "$PY" scripts/paper/make_ci_definition_check.py ;;
+      "$PY" scripts/paper/make_ci_definition_check.py
+      "$PY" scripts/paper/make_region_table.py ;;
+    sensitivity)
+      for r in "${REGIONS[@]}"; do
+        "$PY" scripts/paper/run_loss_sensitivity.py --cache-dir "$CACHE/loss_sensitivity" --region "$r"
+      done
+      "$PY" scripts/paper/run_loss_sensitivity.py --cache-dir "$CACHE/loss_sensitivity" --summarize ;;
     tables)
       "$PY" scripts/paper/collect_paper_tables.py ;;
     *) echo "unknown phase $phase"; exit 1 ;;

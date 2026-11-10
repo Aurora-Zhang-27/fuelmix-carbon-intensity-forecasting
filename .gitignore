@@ -39,6 +39,8 @@ results/*
 !results/summary/**
 !results/robustness_intervals/
 !results/robustness_intervals/**
+!results/robustness_intervals_dayahead/
+!results/robustness_intervals_dayahead/**
 !results/robustness_seeds/
 !results/robustness_seeds/**
 !results/experiments/
