@@ -28,6 +28,8 @@ from fuel_mix_trainer import build_supervised_table,load_config  # noqa: E402
 CODES={'ISO-NE':'isone','NYISO':'nyiso','PJM':'pjm','ERCOT':'ercot','CAISO':'caiso','MISO':'miso','IESO':'ieso'}
 WEEK=(pd.Timestamp('2025-10-06',tz='UTC'),pd.Timestamp('2025-10-13',tz='UTC'))
 GRID='#E3E5E7'
+FM_GREEN='#1B7F3B'   # Fuel-mix in the ERCOT case figure (darker than the wind band)
+WS_PURPLE='#6B2FA0'  # Fuel-mix + wind/solar in the ERCOT case figure
 # Fuel colors (validated; red and aqua are kept apart by coal and labelled on the areas).
 FUELS=[('Nuclear + other','#6250d6'),('Gas','#e34948'),('Coal','#5b5f66'),('Wind','#1baf7a'),('Solar','#eda100')]
 METHODS=[('ci_true','Realized',INK,'-',1.15),('persistence_24h','24h persistence',GRAY,':',1.0),
@@ -104,18 +106,14 @@ def ercot_case(args,out_name='ercot_case_stack',figsize=(3.5,4.6)):
         v=groups[name].to_numpy(float)/1000
         axes[0].fill_between(t,base,base+v,color=color,lw=0,alpha=.9)
         axes[0].plot(t,base+v,color='white',lw=.8)  # surface gap between bands
-        # Direct label at the centre of the band's widest stretch (smoothed), skipped for thin bands.
-        smooth=pd.Series(v).rolling(9,center=True,min_periods=1).mean().to_numpy()
-        mid=6+int(np.argmax(smooth[6:-6]))  # keep labels clear of the plot edges
-        if v[mid]>6:axes[0].text(mid,base[mid]+v[mid]/2,name,ha='center',va='center',fontsize=6.5,
-                                 color='white' if name in ('Gas','Coal') else INK)
         base=base+v
     axes[0].set_ylabel('Generation (GW)');axes[0].set_ylim(0,78);axes[0].set_yticks([0,20,40,60])
     axes[0].legend(handles=[plt.Rectangle((0,0),1,1,color=c,lw=0) for _,c in FUELS],labels=[n for n,_ in FUELS],
                    loc='upper center',ncol=5,frameon=False,fontsize=6,handlelength=.9,handletextpad=.3,
                    columnspacing=.7,borderaxespad=.1)
+    # Fuel-mix in dark green, the wind/solar variant in purple; both differ from the line colors of the week figure.
     lines=[('realized','Realized',INK,'-',1.2),('persistence','24h persistence',GRAY,':',1.0),
-           ('fuelmix','Fuel-mix',BLUE,'--',1.0),('fuelmix_ws24','Fuel-mix + wind/solar',ORANGE,'-',1.0)]
+           ('fuelmix','Fuel-mix',FM_GREEN,'--',1.0),('fuelmix_ws24','Fuel-mix + wind/solar',WS_PURPLE,'-',1.0)]
     for tag,label,color,ls,lw in lines:
         axes[1].plot(t,x['ci_'+tag],color=color,ls=ls,lw=lw,label=label)
         if tag!='persistence':axes[2].plot(t,x['nat_gas_'+tag],color=color,ls=ls,lw=lw)
